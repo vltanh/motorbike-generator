@@ -102,3 +102,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# VSCODE
+.vscode/
+
+####
+data/*
+output/*
+output_128/*.pth
+evaluation_script/*
