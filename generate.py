@@ -128,8 +128,11 @@ netD = Discriminator(ngpu).to(device)
 if opt.netD != '':
     netD.load_state_dict(torch.load(opt.netD))
 
-i = 8575
-while i < 10000:
+begin = 0
+end = 10000
+
+i = begin
+while i < end:
     start = time.time()
     noise = torch.randn(64, nz, 1, 1, device=device)
     fake = netG(noise)
@@ -142,5 +145,5 @@ while i < 10000:
                             f'{opt.outf}/{i}.png',
                             normalize=True)
             i += 1
-            if i >= 10000: break
+            if i >= end: break
     print(i, time.time() - start)
