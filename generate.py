@@ -12,12 +12,13 @@ import torch.utils.data
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
+import numpy as np
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--netG', help="path to netG (to continue training)")
 parser.add_argument('--netD', help="path to netD (to continue training)")
 parser.add_argument('--outf', default='.', help='folder to output images and model checkpoints')
-parser.add_argument('--workers', type=int, help='number of data loading workers', default=2)
+parser.add_argument('--workers', type=int, help='number of data loading workers', default=4)
 parser.add_argument('--batchSize', type=int, default=64, help='input batch size')
 parser.add_argument('--imageSize', type=int, default=64, help='the height / width of the input image to network')
 parser.add_argument('--nz', type=int, default=100, help='size of the latent z vector')
@@ -127,15 +128,19 @@ netD = Discriminator(ngpu).to(device)
 if opt.netD != '':
     netD.load_state_dict(torch.load(opt.netD))
 
-i = 0
+i = 8575
 while i < 10000:
     start = time.time()
-    noise = torch.randn(32, nz, 1, 1, device=device)
+    noise = torch.randn(64, nz, 1, 1, device=device)
     fake = netG(noise)
     for img in fake:
-        vutils.save_image(img.detach(),
-                        f'{opt.outf}/{i}.png',
-                        normalize=True)
-        i += 1
-        if i >= 10000: break
+        _img = np.array(transforms.ToPILImage()(img).convert('L'))
+        w = np.sum(_img > 250) / np.product(_img.shape)
+        # if 0.5 < w:
+        if True:
+            vutils.save_image(img.detach(),
+                            f'{opt.outf}/{i}.png',
+                            normalize=True)
+            i += 1
+            if i >= 10000: break
     print(i, time.time() - start)
