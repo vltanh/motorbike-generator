@@ -111,4 +111,5 @@ data/*
 output/*
 output_128/*.pth
 evaluation_script/*
-*.zip
+submit/*
+logs/*
